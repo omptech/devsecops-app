@@ -1,12 +1,10 @@
-# Tic Tac Toe Game
-
-A modern implementation of the classic Tic Tac Toe game built with React, TypeScript, and Tailwind CSS.
-
-![image](https://github.com/user-attachments/assets/5b2813a5-f493-4665-8964-77359b5be93a)
+# DevSecOps Pipeline Implementation for Tic Tac Toe Game
 
 ## DevSecOps Pipeline
 
 ![Screenshot 2025-03-04 at 7 16 48 PM](https://github.com/user-attachments/assets/7ed79f9c-9144-4870-accd-500085a15592)
+
+![image](https://github.com/user-attachments/assets/5b2813a5-f493-4665-8964-77359b5be93a)
 
 ## Features
 
