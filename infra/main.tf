@@ -39,8 +39,8 @@ resource "aws_security_group" "app_sg" {
 }
 
 resource "aws_instance" "app_server" {
-  ami           = "ami-0c02fb55956c7d316" # Amazon Linux 2 AMI for us-east-1
-  instance_type = "t2.medium"
+  ami                    = "ami-0c02fb55956c7d316" # Amazon Linux 2 AMI for us-east-1
+  instance_type          = "t2.medium"
   vpc_security_group_ids = [aws_security_group.app_sg.id]
 
   root_block_device {
@@ -53,4 +53,4 @@ resource "aws_instance" "app_server" {
   }
 
   user_data = file("${path.module}/user_data.sh")
-} 
+}
