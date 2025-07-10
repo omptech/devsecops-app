@@ -31,11 +31,9 @@ apt-get install -y nodejs
 echo "[INFO] Installing Helm..."
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-# Create kind cluster
 echo "[INFO] Creating kind cluster..."
 kind create cluster --name=devsecops-demo-cluster
 
-# Install ArgoCD
 echo "[INFO] Installing ArgoCD..."
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
@@ -43,7 +41,6 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 echo "[INFO] Waiting for ArgoCD server to be ready..."
 kubectl rollout status deployment/argocd-server -n argocd --timeout=300s
 
-# Show ArgoCD password
 if kubectl get secret argocd-initial-admin-secret -n argocd &>/dev/null; then
   echo "✅ ArgoCD admin password:"
   kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 --decode; echo
@@ -52,7 +49,6 @@ else
   kubectl get secret argocd-secret -n argocd -o jsonpath="{.data.admin\\.password}" | base64 --decode; echo
 fi
 
-# Create ArgoCD app manifest
 APP_MANIFEST="/tmp/sample-argocd-app.yaml"
 cat <<EOM > $APP_MANIFEST
 apiVersion: argoproj.io/v1alpha1
@@ -78,7 +74,6 @@ EOM
 echo "[INFO] Deploying sample ArgoCD application..."
 kubectl apply -n argocd -f $APP_MANIFEST
 
-# Install Prometheus and Grafana
 echo "[INFO] Installing Prometheus & Grafana via Helm..."
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
@@ -86,7 +81,8 @@ kubectl create namespace monitoring || true
 helm install kind-prometheus prometheus-community/kube-prometheus-stack --namespace monitoring
 
 echo "[INFO] Waiting for Prometheus operator to be ready..."
-kubectl rollout status deployment/kind-prometheus-kube-prometheus-stack-operator -n monitoring --timeout=300s || true
+OPERATOR_DEPLOY=$(kubectl get deploy -n monitoring -l app.kubernetes.io/name=kube-prometheus-stack-operator -o jsonpath="{.items[0].metadata.name}")
+kubectl rollout status deployment/$OPERATOR_DEPLOY -n monitoring --timeout=300s || true
 
 echo "✅ Grafana admin password:"
 kubectl get secret --namespace monitoring kind-prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
