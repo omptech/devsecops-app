@@ -86,7 +86,7 @@ kubectl create namespace monitoring || true
 helm install kind-prometheus prometheus-community/kube-prometheus-stack --namespace monitoring
 
 echo "[INFO] Waiting for Prometheus operator to be ready..."
-kubectl rollout status deployment/kind-prometheus-kube-prometheus-sta-operator -n monitoring --timeout=300s || true
+kubectl rollout status deployment/kind-prometheus-kube-prometheus-stack-operator -n monitoring --timeout=300s || true
 
 echo "✅ Grafana admin password:"
 kubectl get secret --namespace monitoring kind-prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
